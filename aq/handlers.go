@@ -3,8 +3,16 @@ package aq
 import (
 	"net/http"
 
-	"github.com/Tkdefender88/joelSite/config"
+	"github.com/Tkdefender88/ButteAir/config"
 )
+
+type quality struct {
+	Temp     int
+	Humidity int
+	Pm1      int
+	Pm2      int
+	Pm3      int
+}
 
 //Index serves index page
 func Index(w http.ResponseWriter, r *http.Request) {
@@ -13,7 +21,13 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	qual := "45%"
+	qual := quality{
+		0,
+		40,
+		100,
+		200,
+		300,
+	}
 
 	config.TPL.ExecuteTemplate(w, "airqual.gohtml", qual)
 }
