@@ -5,40 +5,42 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/Tkdefender88/ButteAir/aq"
+	"github.com/Tkdefender88/ButteAir/server"
 	jwt "github.com/dgrijalva/jwt-go"
-	"golang.org/x/oauth2"
+	"github.com/rs/cors"
 )
 
 var (
-	config = oauth2.Config{
-		ClientID:     "222222",
-		ClientSecret: "222222",
-		Scopes:       []string{"all"},
-		RedirectURL:  "http://localhost:9000/oauth2",
-		Endpoint: oauth2.Endpoint{
-			AuthURL:  "http://localhost:9000/authorize",
-			TokenURL: "http://localhost:9000/token",
-		},
-	}
-
+	/*	config = oauth2.Config{
+			ClientID:     "222222",
+			ClientSecret: "222222",
+			Scopes:       []string{"all"},
+			RedirectURL:  "http://localhost:9000/oauth2",
+			Endpoint: oauth2.Endpoint{
+				AuthURL:  "http://localhost:9000/authorize",
+				TokenURL: "http://localhost:9000/token",
+			},
+		}
+	*/
 	mySigningKey = []byte("captainjacksparrowsayshi")
 )
 
 func main() {
+	router := server.NewRouter()
 
-	fs := http.FileServer(http.Dir("./assets"))
-	http.HandleFunc("/", index)
-	http.HandleFunc("/airqual", aq.Index)
-	http.Handle("/update", isAuthorized(update))
-	http.Handle("/assets/", http.StripPrefix("/assets", fs))
+	//Add the file server to the new router
+	fs := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets")))
+	router.PathPrefix("/assets/").Handler(fs)
 
+	//set up CORS
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "OPTIONS"},
+	})
+
+	//Start the sever
 	log.Println("Listening ...")
-	log.Fatal(http.ListenAndServe(":9000", nil))
-}
-
-func index(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/airqual", http.StatusSeeOther)
+	log.Fatal(http.ListenAndServe(":9000", c.Handler(router)))
 }
 
 func update(w http.ResponseWriter, r *http.Request) {
