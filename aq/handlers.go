@@ -14,8 +14,13 @@ type quality struct {
 	Pm3      int
 }
 
-//Index serves index page
+//Index redirects to the airqual page
 func Index(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "/airqual", http.StatusSeeOther)
+}
+
+//AirQuality serves airquality page
+func AirQuality(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, http.StatusText(405), 405)
 		return
