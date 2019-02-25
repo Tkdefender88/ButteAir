@@ -1,7 +1,6 @@
 package server
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/Tkdefender88/ButteAir/aq"
@@ -20,18 +19,6 @@ type Route struct {
 
 //Routes is a collection of type Route
 type Routes []Route
-
-var fileServer http.HandlerFunc
-
-func init() {
-	//assert the file server is a handlerFunc
-	fs, ok := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets"))).(http.HandlerFunc)
-	if !ok {
-		log.Fatalln("Could not assert file server type")
-	}
-
-	fileServer = fs
-}
 
 var routes = Routes{
 	Route{
