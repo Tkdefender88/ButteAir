@@ -7,6 +7,7 @@ import (
 )
 
 type quality struct {
+	Place    string
 	Temp     int
 	Humidity int
 	Pm1      int
@@ -22,12 +23,57 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	qual := quality{
+		"here",
 		0,
 		40,
-		100,
+		10000,
 		200,
 		300,
 	}
 
-	config.TPL.ExecuteTemplate(w, "airqual.gohtml", qual)
+	quals := []quality{
+		qual,
+		quality{
+			"airport",
+			20,
+			40,
+			110,
+			210,
+			310,
+		},
+		quality{
+			"hospital",
+			30,
+			40,
+			120,
+			220,
+			320,
+		},
+		quality{
+			"Whale-Mart",
+			30,
+			40,
+			120,
+			220,
+			320,
+		},
+		quality{
+			"Sooubway",
+			30,
+			40,
+			120,
+			220,
+			320,
+		},
+		quality{
+			"Church",
+			30,
+			40,
+			120,
+			220,
+			320,
+		},
+	}
+
+	config.TPL.ExecuteTemplate(w, "airqual.html", quals)
 }
