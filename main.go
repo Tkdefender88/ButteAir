@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/Tkdefender88/ButteAir/aq"
+
 	"github.com/Tkdefender88/ButteAir/server"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/rs/cors"
@@ -31,6 +33,7 @@ func main() {
 	//Add the file server to the new router
 	fs := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets")))
 	router.PathPrefix("/assets/").Handler(fs)
+	router.Path("/data").Handler(isAuthorized(aq.UpdateData))
 
 	//set up CORS
 	c := cors.New(cors.Options{
@@ -61,8 +64,8 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 						return nil, fmt.Errorf("There was an error")
 					}
 					return mySigningKey, nil
-				})
-
+				},
+			)
 			if err != nil {
 				fmt.Fprintf(w, err.Error())
 			}
@@ -71,7 +74,6 @@ func isAuthorized(endpoint func(http.ResponseWriter, *http.Request)) http.Handle
 				endpoint(w, r)
 			}
 		} else {
-
 			fmt.Fprintf(w, "Not Authorized")
 		}
 	})
