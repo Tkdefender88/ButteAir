@@ -1,0 +1,50 @@
+{{define "device"}}
+
+<div class="text-center">
+	<h2>{{.Place}}</h2>
+</div>
+<div class="card-deck mb-3 text-center align-items-center">
+	<div class="card mb-4 shadow-sm mid-page">
+		<div class="card-header">
+			<h4 class="my-0 font-weight-normal">Temp</h4>
+		</div>
+		<div class="card-body">
+			<h3 class="card-title pricing-card-title">{{.Temp}} <small class="text-muted"> &#176;C</small></h3>
+
+		</div>
+	</div>
+	<div class="card mb-4 shadow-sm mid-page">
+		<div class="card-header">
+			<h4 class="my-0 font-weight-normal">Humidity</h4>
+		</div>
+		<div class="card-body">
+			<h3 class="card-title pricing-card-title">{{.Humidity}} <small class="text-muted">%</small></h3>
+
+		</div>
+	</div>
+	<div class="card mb-4 shadow-sm mid-page">
+		<div class="card-header">
+			<h4 class="my-0 font-weight-normal">PM1</h4>
+		</div>
+		<div class="card-body">
+			<h3 class="card-title pricing-card-title">{{.Pm1}} <small class="text-muted"> ppm</small></h3>
+		</div>
+	</div>
+	<div class="card mb-4 shadow-sm mid-page">
+		<div class="card-header">
+			<h4 class="my-0 font-weight-normal">PM2</h4>
+		</div>
+		<div class="card-body">
+			<h3 class="card-title pricing-card-title">{{.Pm2}} <small class="text-muted"> ppm</small></h3>
+		</div>
+	</div>
+	<div class="card mb-4 shadow-sm mid-page">
+		<div class="card-header">
+			<h4 class="my-0 font-weight-normal">PM3</h4>
+		</div>
+		<div class="card-body">
+			<h3 class="card-title pricing-card-title">{{.Pm3}} <small class="text-muted"> ppm</small></h3>
+		</div>
+	</div>
+</div>
+{{end}}
