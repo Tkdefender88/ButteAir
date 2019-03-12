@@ -23,7 +23,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	qual := quality{
-		"here",
+		"test location 0",
 		0,
 		40,
 		10000,
@@ -34,7 +34,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	quals := []quality{
 		qual,
 		quality{
-			"airport",
+			"test location 1",
 			20,
 			40,
 			110,
@@ -42,31 +42,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 			310,
 		},
 		quality{
-			"hospital",
-			30,
-			40,
-			120,
-			220,
-			320,
-		},
-		quality{
-			"Whale-Mart",
-			30,
-			40,
-			120,
-			220,
-			320,
-		},
-		quality{
-			"Sooubway",
-			30,
-			40,
-			120,
-			220,
-			320,
-		},
-		quality{
-			"Church",
+			"test location 2",
 			30,
 			40,
 			120,
