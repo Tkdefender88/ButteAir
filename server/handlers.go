@@ -1,4 +1,4 @@
-package aq
+package server
 
 import (
 	"encoding/json"
@@ -22,6 +22,12 @@ type quality struct {
 // Index redirects to the airqual page
 func Index(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/airqual", http.StatusSeeOther)
+}
+
+//NotImplemented is a hanlder to use in place of a final handler while defining
+//routes and the api of the application
+func NotImplemented(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Not yet Implemented"))
 }
 
 // AirQuality serves airquality page
