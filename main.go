@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -8,6 +9,10 @@ import (
 	"github.com/Tkdefender88/ButteAir/server"
 
 	"github.com/rs/cors"
+)
+
+var (
+	port = ":9000"
 )
 
 func main() {
@@ -21,6 +26,7 @@ func main() {
 	})
 
 	//Start the sever
-	log.Println("Listening ...")
-	log.Fatal(http.ListenAndServe(":9000", c.Handler(loggedRouter)))
+	fmt.Printf("Listening on port %s\n", port)
+	fmt.Printf("Go to http://localhost%s to view\n", port)
+	log.Fatal(http.ListenAndServe(port, c.Handler(loggedRouter)))
 }

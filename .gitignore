@@ -1,3 +1,6 @@
 ButteAir
 
 *_test.go
+
+# REST Client testing files
+*.http
