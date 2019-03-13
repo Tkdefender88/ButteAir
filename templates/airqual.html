@@ -35,8 +35,8 @@
 	</div>
 	<div class="container">
 		<div class="flex-row">
-			{{range .}}
-			{{template "device" .}}
+			{{range $key, $device := .}}
+			{{template "device" $device}}
 			{{end}}
 		</div>
 	</div>
