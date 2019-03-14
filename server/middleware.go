@@ -3,12 +3,13 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
 var (
-	mySigningKey = []byte("captainjacksparrowsayshi")
+	mySigningKey = []byte(os.Getenv("SECRET"))
 )
 
 func isAuthorized(endpoint http.Handler) http.Handler {

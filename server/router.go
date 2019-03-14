@@ -8,6 +8,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func redirectHTTPS(w http.ResponseWriter, r *http.Request) {
+	http.Redirect(w, r, "https://127.0.0.1:443"+r.RequestURI,
+		http.StatusMovedPermanently)
+}
+
 //NewRouter creates a mux router from all the routes in the routes var above.
 func NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
@@ -25,11 +30,10 @@ func NewRouter() *mux.Router {
 		"/airqual",
 		http.HandlerFunc(AirQuality),
 	)
+
 	router.Handle(
 		"/data",
-		isAuthorized(
-			http.HandlerFunc(UpdateData),
-		),
+		http.HandlerFunc(redirectHTTPS),
 	)
 
 	return router
