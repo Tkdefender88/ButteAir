@@ -1,22 +1,32 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
-	"github.com/Tkdefender88/ButteAir/aq"
+	"github.com/Tkdefender88/ButteAir/logger"
+	"github.com/Tkdefender88/ButteAir/server"
+
+	"github.com/rs/cors"
+)
+
+var (
+	port = ":9000"
 )
 
 func main() {
-	fs := http.FileServer(http.Dir("./assets"))
-	http.HandleFunc("/", index)
-	http.HandleFunc("/airqual", aq.Index)
-	http.Handle("/resources/", http.StripPrefix("/resources", fs))
+	router := server.NewRouter()
+	loggedRouter := logger.Logger(router)
 
-	log.Println("Listening ...")
-	log.Fatal(http.ListenAndServe(":9000", nil))
-}
+	//set up CORS middleware
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{"GET", "PUT", "OPTIONS"},
+	})
 
-func index(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/airqual", http.StatusSeeOther)
+	//Start the sever
+	fmt.Printf("Listening on port %s\n", port)
+	fmt.Printf("Go to http://localhost%s to view\n", port)
+	log.Fatal(http.ListenAndServe(port, c.Handler(loggedRouter)))
 }
