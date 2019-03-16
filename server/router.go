@@ -33,7 +33,7 @@ func NewRouter() *mux.Router {
 
 	router.Handle(
 		"/data",
-		http.HandlerFunc(redirectHTTPS),
+		http.HandlerFunc(UpdateData),
 	)
 
 	return router
