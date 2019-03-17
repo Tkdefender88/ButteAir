@@ -12,12 +12,14 @@ import (
 )
 
 var (
-	port = ":9000"
+	port      = ":9000"
+	httpsport = ":443"
 )
 
 func main() {
-	router := server.NewRouter()
+	router, httpsrouter := server.NewRouters()
 	loggedRouter := logger.Logger(router)
+	loggedHTTPSRouter := logger.Logger(httpsrouter)
 
 	//set up CORS middleware
 	c := cors.New(cors.Options{
@@ -28,5 +30,14 @@ func main() {
 	//Start the sever
 	fmt.Printf("Listening on port %s\n", port)
 	fmt.Printf("Go to http://localhost%s to view\n", port)
+
+	go log.Fatal(
+		http.ListenAndServeTLS(
+			httpsport,
+			"cert.pem",
+			"key.pem",
+			c.Handler(loggedHTTPSRouter),
+		),
+	)
 	log.Fatal(http.ListenAndServe(port, c.Handler(loggedRouter)))
 }
