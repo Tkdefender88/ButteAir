@@ -15,10 +15,8 @@ func redirectHTTPS(w http.ResponseWriter, r *http.Request) {
 
 //NewRouters creates two mux routers from all the routes in the routes var above.
 //One serves on http and the other https
-func NewRouters() (*mux.Router, *mux.Router) {
+func NewRouters() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
-
-	HTTPSrouter := mux.NewRouter().StrictSlash(true)
 
 	//file server for static assets
 	fs := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets")))
@@ -27,13 +25,10 @@ func NewRouters() (*mux.Router, *mux.Router) {
 	//the routes that define our api
 	router.Handle("/", http.HandlerFunc(Index)).Methods("GET")
 	router.Handle("/airqual", http.HandlerFunc(AirQuality)).Methods("GET")
-	router.Handle("/data", http.HandlerFunc(redirectHTTPS)).Methods("GET")
-
-	HTTPSrouter.Handle(
+	router.Handle(
 		"/data",
 		isAuthorized(http.HandlerFunc(UpdateData)),
-	).Methods("POST")
-	HTTPSrouter.Handle("/", http.HandlerFunc(Index)).Methods("GET")
-	HTTPSrouter.Handle("/airqual", http.HandlerFunc(AirQuality)).Methods("GET")
-	return router, HTTPSrouter
+	).Methods("GET")
+
+	return router
 }
