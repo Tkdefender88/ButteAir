@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"crypto/tls"
-	"flag"
 	"fmt"
 	"log"
 	"net/http"
-	"time"
+	"os"
+	"os/user"
+	"path/filepath"
 
 	"golang.org/x/crypto/acme/autocert"
 
@@ -17,71 +18,18 @@ import (
 	"github.com/rs/cors"
 )
 
-var (
-	port       = ":9000"
-	httpsport  = ":443"
-	production *bool
-)
-
 const (
-	certsDir = "/app/certs/"
+	domain = "www.justinbak.com"
 )
-
-func makeHTTPServer() *http.Server {
-	mux := &http.ServeMux{}
-	mux.HandleFunc("/", server.Index)
-
-	//set timeouts so that slow or malicious clients don't hog resources
-	return &http.Server{
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 5 * time.Second,
-		IdleTimeout:  120 * time.Second,
-	}
-}
 
 func main() {
-	production = flag.Bool("prod", false, "Run the server in production?")
-	flag.Parse()
+
+	//create router
+	router := server.NewRouter()
+	loggedRouter := logger.Logger(router)
 
 	var httpsSrv *http.Server
-	var m *autocert.Handler
-
-	if *production {
-
-		hostPolicy := func(ctx context.Context, host string) error {
-			allowedHost := "justinbak.com"
-			if host == allowedHost {
-				return nil
-			}
-			return fmt.Errorf("acme/autocert: only %s host is allowed",
-				allowedHost)
-		}
-
-		httpsSrv = makeHTTPServer()
-		m := &autocert.Manager{
-			Prompt:     autocert.AcceptTOS,
-			HostPolicy: hostPolicy,
-			Cache:      autocert.DirCache(certsDir),
-		}
-		httpsSrv.Addr = ":443"
-		httpsSrv.TLSConfig = &tls.Config{GetCertificate: m.GetCertificate}
-
-		go func() {
-			err := httpsSrv.ListenAndServeTLS("", "")
-			if err != nil {
-				log.Fatalf("httpsSrv.ListenAndServeTLS() failed with: %s", err)
-			}
-		}()
-	}
-
-	httpSrv := makeHTTPServer()
-	if m != nil {
-		httpSrv.Handler = m.HTTPHandler(httpSrv.Handler)
-	}
-
-	router, httpsrouter := server.NewRouters()
-	loggedRouter := logger.Logger(router)
-	loggedHTTPSRouter := logger.Logger(httpsrouter)
+	var m *autocert.Manager
 
 	//set up CORS middleware
 	c := cors.New(cors.Options{
@@ -89,17 +37,52 @@ func main() {
 		AllowedMethods: []string{"GET", "PUT", "OPTIONS"},
 	})
 
-	//Start the sever
-	fmt.Printf("Listening on port %s\n", port)
-	fmt.Printf("Go to http://localhost%s to view\n", port)
+	//set up cert manager
+	hostPolicy := func(ctx context.Context, host string) error {
+		allowedHost := domain
+		if host == allowedHost {
+			return nil
+		}
+		return fmt.Errorf("acme/autocert: only %s host is allowed",
+			allowedHost)
+	}
 
-	go log.Fatal(
-		http.ListenAndServeTLS(
-			httpsport,
-			"cert.pem",
-			"key.pem",
-			c.Handler(loggedHTTPSRouter),
-		),
-	)
-	log.Fatal(http.ListenAndServe(port, c.Handler(loggedRouter)))
+	m = &autocert.Manager{
+		Prompt:     autocert.AcceptTOS,
+		HostPolicy: hostPolicy,
+	}
+
+	dir, err := cacheDir()
+	if err == nil {
+		m.Cache = autocert.DirCache(dir)
+	}
+
+	//create the server with the routers
+	httpsSrv = server.MakeServer(c.Handler(loggedRouter))
+	httpsSrv.Addr = ":https"
+	httpsSrv.TLSConfig = &tls.Config{GetCertificate: m.GetCertificate}
+
+	fmt.Printf("Starting http/https server on %s\n", httpsSrv.Addr)
+
+	//serve on http
+	go func() {
+		//auto magically redirects to https
+		h := m.HTTPHandler(nil)
+		log.Fatal(http.ListenAndServe(":http", h))
+	}()
+
+	//serve https
+	log.Fatal(httpsSrv.ListenAndServeTLS("", ""))
+}
+
+// cacheDir creates a consistent cache directory for the tls certificates
+func cacheDir() (string, error) {
+	var dir string
+	if u, _ := user.Current(); u != nil {
+		dir = filepath.Join(os.TempDir(), "cert-cache-autocert-"+u.Username)
+		if err := os.MkdirAll(dir, 0700); err != nil {
+			return "", err
+		}
+	}
+	return dir, nil
 }
