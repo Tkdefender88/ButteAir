@@ -64,7 +64,6 @@ func NewRouter() *mux.Router {
 		"/data",
 		isAuthorized(http.HandlerFunc(UpdateData)),
 	).Methods("GET")
-		http.HandlerFunc(UpdateData),
-  )
+
 	return router
 }
