@@ -2,5 +2,7 @@ ButteAir
 
 *_test.go
 
+autossl
+
 # REST Client testing files
 *.http
