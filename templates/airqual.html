@@ -5,34 +5,20 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title>Butte Air Quality</title>
-	<link rel="stylesheet" type="text/css" href="/resources/stylesheets/main.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="assets/stylesheets/main.css">
 </head>
 
-<body style="background-color: lightsteelblue">
+<body>
 
 
 	{{template "navbar"}}
-	<!--
-
-	<nav class="navbar navbar-light bg-light">
-		<span class="navbar-brand mb-0 h1">Butte Air Quality</span>
-	</nav>
-
-	-->
-
 	<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-		<h1 class="display-4"><b>Butte's Air Quality Rating</b></h1>
-		<!-- temporarily removed tagline.
-		<p class="lead">
+		<h1 style="color: black" class="display-4"><b>Butte's Air Quality Rating</b></h1>
 
-			Butte's air is probably meh at best but you can look here to make
-			sure.
-
-		</p>
-		-->
 	</div>
+
 	<div class="container">
 		<div class="flex-row">
 			{{range $key, $device := .}}
@@ -40,6 +26,18 @@
 			{{end}}
 		</div>
 	</div>
+	</div>
+
+	<div class="card mx-auto" style="width: 18rem;">
+		<div class="card-header text-center">
+			Quality Key:
+		</div>
+		<ul class="list-group list-group-flush">
+			<li class="list-group-item list-group-item-success text-center">Good: 100 - 90</li>
+			<li class="list-group-item list-group-item-secondary text-center">Good: 80 - 70</li>
+			<li class="list-group-item list-group-item-warning text-center">Poor: 60 - 50</li>
+			<li class="list-group-item list-group-item-danger text-center">Danger: 40 and below</li>
+		</ul>
 	</div>
 </body>
 

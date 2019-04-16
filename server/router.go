@@ -54,7 +54,7 @@ func NewRouter() *mux.Router {
 	router := mux.NewRouter().StrictSlash(true)
 
 	//file server for static assets
-	fs := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets")))
+	fs := http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets/")))
 	router.PathPrefix("/assets/").Handler(logger.Logger(fs))
 
 	//the routes that define our api

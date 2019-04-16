@@ -3,6 +3,13 @@ body,
 content {
     width: 100%;
     height: 100%;
+
+    background-image: url("/assets/images/ButteAirBackground.jpg");
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .foobar {
@@ -14,16 +21,6 @@ content {
     align-self: center;
 }
 
-.bg-custom {
-    /* The image used */
-    background-image: url("/resources/images/2019-Montana-Folk-Festival-Butte-Montana-28.jpg");
-    /* Full height */
-    height: 100%;
-    /* Center and scale the image nicely */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
 
 p {
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
