@@ -27,7 +27,7 @@ type Airinfo struct {
 	Humidity string         `json:"humidity"`
 	PM10     string         `json:"pm10"`
 	PM25     string         `json:"pm25"`
-	PM100    string         `json:"pm100"`
+	PM1      string         `json:"pm1"`
 	Location Location       `json:"location"`
 	Time     CollectionTime `json:"now"`
 }
