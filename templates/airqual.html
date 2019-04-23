@@ -11,8 +11,6 @@
 </head>
 
 <body>
-
-
 	{{template "navbar"}}
 	<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
 		<h1 style="color: black" class="display-4"><b>Butte's Air Quality Rating</b></h1>
@@ -20,7 +18,7 @@
 	</div>
 
 	<div class="container">
-		<div class="flex-row">
+		<div class="flex-row" id="devices">
 			{{range $key, $device := .}}
 			{{template "device" $device}}
 			{{end}}
@@ -33,14 +31,16 @@
 			Quality Key:
 		</div>
 		<ul class="list-group list-group-flush">
-			<li class="list-group-item list-group-item-success text-center">Good: 100 - 90</li>
-			<li class="list-group-item list-group-item-secondary text-center">Good: 80 - 70</li>
-			<li class="list-group-item list-group-item-warning text-center">Poor: 60 - 50</li>
-			<li class="list-group-item list-group-item-danger text-center">Danger: 40 and below</li>
+			<li class="list-group-item list-group-item-success text-center">Great: 10 or less</li>
+			<li class="list-group-item list-group-item-secondary text-center">Good: 11 - 20</li>
+			<li class="list-group-item list-group-item-warning text-center">Poor: 21 - 34</li>
+			<li class="list-group-item list-group-item-danger text-center">Danger: 35 or more</li>
 		</ul>
 	</div>
+
 </body>
 
+<script src="assets/scripts/colorbox.js"></script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
 	integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
 	crossorigin="anonymous"></script>

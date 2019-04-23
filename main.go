@@ -1,16 +1,12 @@
 package main
 
 import (
-	"context"
-	"crypto/tls"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"os/user"
 	"path/filepath"
-
-	"golang.org/x/crypto/acme/autocert"
 
 	"github.com/Tkdefender88/ButteAir/logger"
 	"github.com/Tkdefender88/ButteAir/server"
@@ -19,7 +15,7 @@ import (
 )
 
 const (
-	domain = "www.justinbak.com"
+	domain = "justinbak.com"
 )
 
 func main() {
@@ -29,50 +25,43 @@ func main() {
 	loggedRouter := logger.Logger(router)
 
 	var httpsSrv *http.Server
-	var m *autocert.Manager
+	//var m *autocert.Manager
 
 	//set up CORS middleware
 	c := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
-		AllowedMethods: []string{"GET", "PUT", "OPTIONS"},
+		AllowedMethods: []string{"GET", "PUT", "POST", "OPTIONS"},
 	})
-
-	//set up cert manager
-	hostPolicy := func(ctx context.Context, host string) error {
-		allowedHost := domain
-		if host == allowedHost {
-			return nil
+	/*
+		//set up cert manager
+		hostPolicy := func(ctx context.Context, host string) error {
+			allowedHost := domain
+			if host == allowedHost {
+				return nil
+			}
+			return fmt.Errorf("acme/autocert: only %s host is allowed",
+				allowedHost)
 		}
-		return fmt.Errorf("acme/autocert: only %s host is allowed",
-			allowedHost)
-	}
 
-	m = &autocert.Manager{
-		Prompt:     autocert.AcceptTOS,
-		HostPolicy: hostPolicy,
-	}
+		m = &autocert.Manager{
+			Prompt:     autocert.AcceptTOS,
+			HostPolicy: hostPolicy,
+		}
 
-	dir, err := cacheDir()
-	if err == nil {
-		m.Cache = autocert.DirCache(dir)
-	}
-
+		dir, err := cacheDir()
+		if err == nil {
+			m.Cache = autocert.DirCache(dir)
+		}
+	*/
 	//create the server with the routers
 	httpsSrv = server.MakeServer(c.Handler(loggedRouter))
-	httpsSrv.Addr = ":https"
-	httpsSrv.TLSConfig = &tls.Config{GetCertificate: m.GetCertificate}
+	httpsSrv.Addr = ":8080"
+	//httpsSrv.TLSConfig = &tls.Config{GetCertificate: m.GetCertificate}
 
 	fmt.Printf("Starting http/https server on %s\n", httpsSrv.Addr)
 
-	//serve on http
-	go func() {
-		//auto magically redirects to https
-		h := m.HTTPHandler(nil)
-		log.Fatal(http.ListenAndServe(":http", h))
-	}()
-
 	//serve https
-	log.Fatal(httpsSrv.ListenAndServeTLS("", ""))
+	log.Fatal(httpsSrv.ListenAndServe())
 }
 
 // cacheDir creates a consistent cache directory for the tls certificates
